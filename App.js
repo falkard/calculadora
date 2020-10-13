@@ -2,6 +2,8 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+var memoryStack = [];
+
 class ResultComponent extends React.Component {
 
   render() {
@@ -21,6 +23,11 @@ class KeyPadComponent extends React.Component {
     return (
       <div className="button">
         <button name="AC" onClick={e => this.props.onClick(e.target.name)}>AC</button><br />
+
+        <button name="MC" onClick={e => this.props.onClick(e.target.name)}>MC</button>
+        <button name="MR" onClick={e => this.props.onClick(e.target.name)}>MR</button>
+        <button name="M+" onClick={e => this.props.onClick(e.target.name)}>M+</button>
+        <button name="MS" onClick={e => this.props.onClick(e.target.name)}>MS</button><br />
 
         <button name="1" onClick={e => this.props.onClick(e.target.name)}>1</button>
         <button name="2" onClick={e => this.props.onClick(e.target.name)}>2</button>
@@ -64,6 +71,24 @@ class App extends React.Component {
       this.backspace()
     }
 
+    else if (button === "MC") {
+      memoryStack.pop();
+    }
+
+    else if (button === "MR") {
+      this.setState({
+        result: this.state.result + memoryStack.pop()
+      })
+    }
+
+    else if (button === "M+") {
+      memoryStack.push(parseFloat(this.state.result) + parseFloat(memoryStack.pop()))
+    }
+
+    else if (button === "MS") {
+      memoryStack.push(this.state.result);
+    }
+
     else {
       this.setState({
         result: this.state.result + button
@@ -95,7 +120,7 @@ class App extends React.Component {
     return (
       <div>
         <div className="calculator-body">
-          <h1>Calculadora (sem memória)</h1>
+          <h1>Calculadora (com memória)</h1>
           <ResultComponent result={this.state.result} />
           <KeyPadComponent onClick={this.onClick} />
         </div>
